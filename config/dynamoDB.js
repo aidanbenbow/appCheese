@@ -47,3 +47,133 @@ export async function getAllCheeseArticles() {
     }
 }
 
+// Function to query DynamoDB using a GSI
+async function queryById(id) {
+    const params = {
+        TableName: 'cheesearticles', // Replace with your table name
+        IndexName: 'id-index', // Replace with your GSI name
+        KeyConditionExpression: '#id = :id', // Assuming 'id' is the attribute in your GSI
+        ExpressionAttributeNames: {
+            '#id': 'id' // Use the actual attribute name
+        },
+        ExpressionAttributeValues: {
+            ':id': id // The value you're searching for
+        }
+    };
+
+    try {
+        const result = await docClient.send(new QueryCommand(params));
+        return result.Items; // Return the found items
+    } catch (err) {
+        console.error("Error querying DynamoDB:", err);
+        throw err;
+    }
+}
+
+//function to query by primary and secondary key
+export async function queryByTopicAndCreatedAt(topic, createdAt) {
+    const params = {
+        TableName: 'cheesearticles', // Replace with your table name
+        KeyConditionExpression: '#topic = :topic AND #createdAt = :createdAt', // Assuming 'topic' and 'createdAt' are the attributes in your table
+        ExpressionAttributeNames: {
+            '#topic': 'topic', // Use the actual attribute name
+            '#createdAt': 'createdAt' // Use the actual attribute name
+        },
+        ExpressionAttributeValues: {
+            ':topic': topic, // The value you're searching for
+            ':createdAt': createdAt // The value you're searching for
+        }
+    };
+
+    try {
+        const result = await docClient.send(new QueryCommand(params));
+        return result.Items; // Return the found items
+    } catch (err) {
+        console.error("Error querying DynamoDB:", err);
+        throw err;
+    }
+}
+
+
+// Function to get an item from DynamoDB using its primary key
+export async function getItem(id) {
+    // Query the item first
+    const items = await queryById(id);
+    
+    if (items.length === 0) {
+        console.log("Item not found!");
+        return;
+    }
+
+    return items[0]; // Assuming only one item is returned
+}
+
+// Function to delete an item from DynamoDB using its primary key
+export async function deleteItem(id) {
+    // Query the item first
+    const items = await queryById(id);
+    
+    if (items.length === 0) {
+        console.log("Item not found!");
+        return;
+    }
+
+    const itemToDelete = items[0]; // Assuming only one item is returned
+
+    // Use DeleteItem to delete the found item
+    const deleteParams = {
+        TableName: 'cheesearticles', // Replace with your table name
+        Key: {
+            'topic': itemToDelete.topic,
+             // Delete by primary key (ensure it's the correct key)
+             'createdAt': itemToDelete.createdAt
+        }
+    };
+
+    try {
+        await docClient.send(new DeleteCommand(deleteParams));
+        console.log(`Item with id ${id} deleted successfully`);
+    } catch (err) {
+        console.error("Error deleting item:", err);
+    }
+}
+
+// Function to update an item in DynamoDB
+export async function updateItem(topic, createdAt, updatedAttributes) {
+    // Query the item first
+    const items = await queryByTopicAndCreatedAt(topic, createdAt);
+    
+    if (items.length === 0) {
+        console.log("Item not found!");
+        return;
+    }
+
+    const itemToUpdate = items[0]; // Assuming only one item is returned
+
+    // Use UpdateItem to update the found item
+    const updateParams = {
+        TableName: 'cheesearticles', // Replace with your table name
+        Key: {
+            'topic': itemToUpdate.topic,
+            'createdAt': itemToUpdate.createdAt
+        },
+        UpdateExpression: 'SET #title = :title, #description = :description, #article = :article', // Update the attributes you want
+        ExpressionAttributeNames: {
+            '#title': 'title',
+            '#description': 'description',
+            '#article': 'article'
+        },
+        ExpressionAttributeValues: {
+            ':title': updatedAttributes.title,
+            ':description': updatedAttributes.description,
+            ':article': updatedAttributes.article
+        }
+    };
+
+    try {
+        await docClient.send(new UpdateCommand(updateParams));
+        console.log(`Item with id updated successfully`);
+    } catch (err) {
+        console.error("Error updating item:", err);
+    }
+}

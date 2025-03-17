@@ -21,6 +21,11 @@
                             <h5 class="card-title"><%= article.title %></h5>
                             <p class="card-text"><%= article.description %></p>
                             <a href="/articles/<%= article.id %>" class="btn btn-primary">Read More</a>
+                            <a href="/articles/<%= article.id %>/edit" class="btn btn-secondary">Edit</a>
+                            <form action="/articles/<%= article.id %>/delete" method="POST" class="mt-3">
+                                <input type="hidden" name="delete" value="true">
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
                         </div>
                     </div>
                 </div>
