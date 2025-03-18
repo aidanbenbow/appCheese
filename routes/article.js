@@ -19,11 +19,17 @@ router.get('/:id/edit', async (req, res) => {
     res.render('articlesedit', { article: article });
 });
 
+router.get('/:id', async (req, res) => {
+    const article = await getItem(req.params.id);
+    res.render('articleshow', { article: article });
+});
+
 router.post('/submit', async (req, res) => {
     const article = {
         id: req.body.id,
         title: req.body.title,
         createdAt: req.body.createdAt,
+        imageUrl: req.body.imageUrl,
         topic: req.body.topic,
         description: req.body.description,
         article: req.body.article
@@ -40,6 +46,7 @@ router.post('/:id/delete', async (req, res) => {
 router.post('/update/:id', async (req, res) => {
     const updatedAttributes = {
         title: req.body.title,
+        imageUrl: req.body.imageUrl,
         description: req.body.description,
         article: req.body.article
     };

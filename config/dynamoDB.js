@@ -157,14 +157,16 @@ export async function updateItem(topic, createdAt, updatedAttributes) {
             'topic': itemToUpdate.topic,
             'createdAt': itemToUpdate.createdAt
         },
-        UpdateExpression: 'SET #title = :title, #description = :description, #article = :article', // Update the attributes you want
+        UpdateExpression: 'SET #title = :title, #description = :description, #imageUrl = :imageUrl, #article = :article', // Update the attributes you want
         ExpressionAttributeNames: {
             '#title': 'title',
+            '#imageUrl': 'imageUrl',
             '#description': 'description',
             '#article': 'article'
         },
         ExpressionAttributeValues: {
             ':title': updatedAttributes.title,
+            ':imageUrl': updatedAttributes.imageUrl,
             ':description': updatedAttributes.description,
             ':article': updatedAttributes.article
         }
