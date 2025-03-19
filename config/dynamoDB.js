@@ -11,12 +11,13 @@ const AWS_SECRET_ACCESS_KEY= process.env.AWS_SECRET_ACCESS_KEY
 // Initialize the DynamoDB client
 const client = new DynamoDBClient({
   region: AWS_REGION,
-//   credentials: { 
-//     accessKeyId: AWS_ACCESS_KEY_ID,
-//     secretAccessKey: AWS_SECRET_ACCESS_KEY 
-//   }
+  credentials: { 
+    accessKeyId: AWS_ACCESS_KEY_ID,
+    secretAccessKey: AWS_SECRET_ACCESS_KEY 
+  }
 });
-const docClient = DynamoDBDocumentClient.from(client);
+export const docClient = DynamoDBDocumentClient.from(client);
+export const TABLE_NAME = "cheeseusers";
 
 // create cheese article
 export async function createCheeseArticle(article) {

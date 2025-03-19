@@ -10,7 +10,7 @@ router.get('/', (req, res) => {
 router.get('/showall', async (req, res) => {
     const articles = await getAllCheeseArticles();
 
-    res.render('showall', { articles: articles });
+    res.render('showarticles', { articles: articles });
 });
 
 router.get('/:id/edit', async (req, res) => {

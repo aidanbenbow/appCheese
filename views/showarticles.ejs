@@ -9,8 +9,7 @@
 <body>
     <div class="container mt-5">
         <h2 class="mb-4">Articles</h2>
-        <a href="/articles" class="btn btn-primary">New Article Page</a>
-        <a href="/auth/logout" class="btn btn-danger">Logout</a>
+       
 
         <div class="row">
             <!-- Loop through articles -->
@@ -22,11 +21,7 @@
                             <h5 class="card-title"><%= article.title %></h5>
                             <p class="card-text"><%= article.description %></p>
                             <a href="/articles/<%= article.id %>" class="btn btn-primary">Read More</a>
-                            <a href="/articles/<%= article.id %>/edit" class="btn btn-secondary">Edit</a>
-                            <form action="/articles/<%= article.id %>/delete" method="POST" class="mt-3">
-                                <input type="hidden" name="delete" value="true">
-                                <button type="submit" class="btn btn-danger">Delete</button>
-                            </form>
+                            
                         </div>
                     </div>
                 </div>
